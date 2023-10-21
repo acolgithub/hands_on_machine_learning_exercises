@@ -1,0 +1,47 @@
+Chapter 1 Exercises
+-------------------
+1. We define Machine Learning by the "engineering-oriented one". That is, a computer program learns
+   from experience E with respect to some task T and some performance measure P, if its
+   performance on T, as measured by P, improves with experience E.
+2. Machine learning shines on detecting spam, making recommendations, image classification, and
+   fraud detection.
+3. A labeled training set is one for which the correct answers are known.
+   This would be obtained by having a human classify it correctly.
+4. Two common application of supervised tasks are spam filters and predicting target numerical values
+   like price of car given a set of features.
+5. Four common unsupervised tasks include detecting data about a blog's visitors, clustering data
+   to gelp for visualizing, use clustering to detect redundant data in order to implement
+   dimensionality reduction, and anamaly detection (like fraud).
+6. I would use an unsupervised learning algorithm so that the robot could learn by examining
+   terrain. I would imagine some sort of reinforcement would be need though. This would help
+   the robot understand good decisions from bad ones.
+7. I would use an unsupervised learning algorithm to segment customers into groups. This is
+   suited to classification.
+8. I would frame spam detection as a supervised learning problem. I would be providing examples of
+   spam and non-spam (ham) which would be classified.
+9. Online learning corresponds to training a system incrementally by providing small portions of
+   data. In doing this, the system can learn incrementally.
+10. Out-of-core learning corresponds to an online learning algorithm which is used to train a model
+    on a huge dataset that cannot fit in one machine's memory. Online learning is necessary here
+    since the full dataset cannot be contained in one machine.
+11. Instance based learning relies on a similarity measure to make predictions after memorizing
+    by heart some given examples.
+12. A model parameter is a variable of the model under consideration. A hyperparameter is a
+    parameter of the learning algorithm (i.e. something that modified how the learning algorithm
+    operates). An example of a hyperparameter is the amount of regularization. A model parameter
+    would be something like the slope from linear regression.
+13. Model-based algorithms seek to make predictions based on a constructed model. They seek to make
+    predictions by comparing with the model and finding the best approximation. 
+14. Four main challenges of machine learning include insufficient quantity of training data,
+    non-representative training data, poor quality data, and irrelevant features.
+15. This is an example of overfitting. One solution would be to make use of a validation set.
+    A second solution would be regularizing in order to ensure the model is only as complex as
+    necessary. A third solution may be to choose a different model that is less complex in order
+    to fit the situation.
+16. A test set is data that would be used to test the effectiveness of a model after training it.
+17. A validation set is used in order to help determine optimal hyperparameters.
+18. A train-dev set is a portion of the training data set aside in order to test a trained model
+    for overfitting. This is used in a situation where the data may not be perfectly representative
+    of the data that it will be used for in production.
+19. If you tune hyperparameters using the test set the model may end up being too fitted to the test
+    set. If it now performs poorly after it would be difficult to see what was causing the trouble.
