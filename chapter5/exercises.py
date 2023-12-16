@@ -276,12 +276,17 @@ print(f"Optimal estimator: {grid_search.best_estimator_}\n")
 # 11.
 from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import train_test_split
+from sklearn.svm import SVR
+from sklearn.svm import LinearSVR
+from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import loguniform, uniform
 
 # get dataset
 X_house, y_house = fetch_california_housing(return_X_y=True, as_frame=True)
 
 # make targets into discrete classes
-y_house = y_house.apply(lambda x: round(x))
+# y_house = y_house.apply(lambda x: round(x))
 
 # look for NAs
 print(X_house.isna().sum(), "\n")
@@ -290,12 +295,12 @@ print(X_house.isna().sum(), "\n")
 print(X_house.dtypes, "\n")
 
 # get correlation and obtain most correlated columns
-corr_house = X_house
-corr_house["result"] = y_house
-corr_house_matrix = corr_house.corr()
-corr_results = corr_house_matrix["result"]
-high_corr_house = corr_house.loc[:, corr_results.abs() > 0.07]
-X_house = high_corr_house.drop("result", axis=1)
+# corr_house = X_house
+# corr_house["result"] = y_house
+# corr_house_matrix = corr_house.corr()
+# corr_results = corr_house_matrix["result"]
+# high_corr_house = corr_house.loc[:, corr_results.abs() > 0.07]
+# X_house = high_corr_house.drop("result", axis=1)
 
 # get training/test
 X_house_train, X_house_test, y_house_train, y_house_test = train_test_split(X_house,
@@ -304,122 +309,55 @@ X_house_train, X_house_test, y_house_train, y_house_test = train_test_split(X_ho
                                                                             random_state=42)
 
 # parameter grids
-
-param_grid_svc = {
-    "svc__C": [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30, 100, 300],
-    "svc__gamma": [0.01, 0.1, 1, 10, 100],
-    "svc__kernel": ["linear", "rbf"]
+param_grid_svr = {
+    "svr__kernel": ["rbf", "linear"],
+    "svr__gamma": loguniform(0.001, 0.1),
+    "svr__C": uniform(1, 10)
 }
 
-# make pipelines
+# # make pipelines
 # house_pipeline_lin = make_pipeline(
 #     StandardScaler(),
-#     LinearSVC(penalty="l2", loss="hinge", C=5, random_state=42, max_iter=100000)
+#     LinearSVR(random_state=42, dual=True, max_iter=100000)
 # )
 
-house_pipeline_svc = make_pipeline(
+house_pipeline_svr = make_pipeline(
     StandardScaler(),
-    SVC(random_state=42)
+    SVR()
 )
 
-# house_pipeline_sgd = make_pipeline(
-#     StandardScaler(),
-#     SGDClassifier(loss="hinge", penalty="l2", alpha=0.01, random_state=42)
-# )
 
-
-# fit pipelines
+# # fit pipelines
 # house_pipeline_lin.fit(X_house_train, y_house_train)
-# print(cross_val_score(estimator=house_pipeline_lin,
+# print((-1)*cross_val_score(estimator=house_pipeline_lin,
 #                 X=X_house_train,
-#                 y=y_house_train))
+#                 y=y_house_train,
+#                 scoring="neg_root_mean_squared_error"))
 
-house_pipeline_svc.fit(X_house_train, y_house_train)
-print(cross_val_score(estimator=house_pipeline_svc,
-                X=X_house_train,
-                y=y_house_train,
-                scoring="neg_root_mean_squared_error"))
-
-# house_pipeline_sgd.fit(X_house_train, y_house_train)
-# print(cross_val_score(estimator=house_pipeline_sgd,
+# house_pipeline_svr.fit(X_house_train, y_house_train)
+# print((-1)*cross_val_score(estimator=house_pipeline_svr,
 #                 X=X_house_train,
-#                 y=y_house_train))
+#                 y=y_house_train,
+#                 scoring="neg_root_mean_squared_error"))
 
 
-house_grid_search_svc = GridSearchCV(estimator=house_pipeline_svc,
-                                     param_grid=param_grid_svc,
-                                     scoring="neg_root_mean_squared_error",
-                                     cv=3)
-# Results obtained when running gridsearch on whole dataset
-# Pipeline(steps=[('standardscaler', StandardScaler()),
-#                ('svc', SVC(C=3, gamma=1, random_state=42))])
-#0.978871158392435
+# use randomized search for best parameters
+house_grid_search_svr = RandomizedSearchCV(estimator=house_pipeline_svr,
+                                     param_distributions=param_grid_svr,
+                                     n_iter=100,
+                                     cv=3,
+                                     random_state=42)
 
-house_grid_search_svc.fit(X_house_train[:2000], y_house_train[:2000])
+house_grid_search_svr.fit(X_house_train[:2000], y_house_train[:2000])
 
-house_classifier_opt = house_grid_search_svc.best_estimator_
-house_opt_score = house_grid_search_svc.best_score_
-house_opt_params = house_grid_search_svc.best_params_
+house_classifier_opt = house_grid_search_svr.best_estimator_
+house_opt_params = house_grid_search_svr.best_params_
 print(house_classifier_opt)
-print(opt_score)
 print(opt_params, "\n")
 
-print(f"final score on test set: {(-1)*100*house_grid_search_svc.score(X_house_test, y_house_test)}%")
-print(f"Optimal params: {opt_params}")
-print(f"Optimal estimator: {house_grid_search_svc.best_estimator_}\n")
-# got 88.68931487864484% for score
+print(f"final score on train set: {(-1)*cross_val_score(house_classifier_opt, X_house_train, y_house_train, scoring='neg_root_mean_squared_error')}")
+print(f"Optimal params: {house_opt_params}")
+print(f"Optimal estimator: {house_grid_search_svr.best_estimator_}\n")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+y_house_pred = house_classifier_opt.predict(X_house_test)
+print(f"final rmse: {mean_squared_error(y_house_test, y_house_pred, squared=False)}")
