@@ -1,5 +1,3 @@
-# hands_on_machine_learning_exercises
+# Learning project for Machine Learning
 
-In these files, I will go over exercises from the book I'm reading.
-In addition, I will use this as a chance to practice using Git Hub.
-Specifically, as a challenge, I will be using Git Hub from command line.
+In these files, I will go over exercises from the book "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow". Included will be workbooks from each chapter where I work through all examples for understanding. In addition, I will answer all questions from each completed chapter to reinforce my learning.
