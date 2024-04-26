@@ -128,7 +128,15 @@ remainder=default_num_pipeline) # one column remaining: housing_median_age
 # print(preprocessing.get_feature_names_out())
 
 
-# 1.
+# Q1: Try a support vector machine regressor (sklearn.svm.SVR) with various
+#     hyperparameters, such as kernel="linear" (with various values for the C
+#     hyperparameters). Note that support vector machines don't scale
+#     well to large datasets, so you should probably train your model on just
+#     the first 5,000 instances of the training set and use only 3-fold cross-
+#     validation, or else it will take hours. Don't worry about what the
+#     hyperparameters mean for now; we'll discuss them in Chapter 5. How
+#     does the best SVR predictor perform?
+
 kernels = ["linear", "rbf"]
 C = [0.01, 0.03, 0.05, 0.1, 0.3, 0.5, 1, 3, 5, 10, 30, 50, 100, 300, 500, 1000, 3000, 5000, 10000]
 
@@ -159,93 +167,99 @@ def svm_test(kernels, C, gamma="scale"):
         plt.savefig(fig_name)
         plt.close()
 
-# svm_test(kernels=kernels, C=C)
+svm_test(kernels=kernels, C=C)
 
-# paramter_grid = [
-#     {"svr__kernel": ["linear"],
-#      "svr__C": C},
-#     {"svr__kernel": ["rbf"],
-#      "svr__C": C}
-# ]
-# full_svm_pipeline = make_pipeline(preprocessing, SVR())
-# grid_search = GridSearchCV(full_svm_pipeline, paramter_grid, cv=3,
-#                            scoring="neg_root_mean_squared_error")
-# grid_search.fit(housing_shrunk, housing_labels_shrunk)
-# print(f"best parameters: {grid_search.best_params_}")
-# print(f"best score: {grid_search.best_score_}")
-
-
-
-# param_grid = [
-#         {'svr__kernel': ['linear'], 'svr__C': C},
-#         {'svr__kernel': ['rbf'], 'svr__C': C}
-#     ]
-
-# svr_pipeline = make_pipeline(preprocessing, SVR())
-# grid_search = GridSearchCV(svr_pipeline, param_grid, cv=2,
-#                            scoring='neg_root_mean_squared_error')
-# grid_search.fit(housing.iloc[:5000], housing_labels.iloc[:5000])
-
-# svr_grid_search_rmse = -grid_search.best_score_
-# print(svr_grid_search_rmse)
-
-# print(grid_search.best_params_)
-
-
-# 2.
-
-# paramter_grid = [
-#     {"svr__kernel": ["linear"],
-#      "svr__C": C},
-#     {"svr__kernel": ["rbf"],
-#      "svr__C": C}
-# ]
-# full_svm_pipeline = make_pipeline(preprocessing, SVR())
-# grid_search = RandomizedSearchCV(full_svm_pipeline, paramter_grid,
-#                                  n_iter=50, cv=3,
-#                                  scoring="neg_root_mean_squared_error")
-# grid_search.fit(housing_shrunk, housing_labels_shrunk)
-# print(f"best parameters: {grid_search.best_params_}")
-# print(f"best score: {grid_search.best_score_}")
+paramter_grid = [
+    {"svr__kernel": ["linear"],
+     "svr__C": C},
+    {"svr__kernel": ["rbf"],
+     "svr__C": C}
+]
+full_svm_pipeline = make_pipeline(preprocessing, SVR())
+grid_search = GridSearchCV(full_svm_pipeline, paramter_grid, cv=3,
+                           scoring="neg_root_mean_squared_error")
+grid_search.fit(housing_shrunk, housing_labels_shrunk)
+print(f"best parameters: {grid_search.best_params_}")
+print(f"best score: {grid_search.best_score_}")
 
 
 
-# 3.
+param_grid = [
+        {'svr__kernel': ['linear'], 'svr__C': C},
+        {'svr__kernel': ['rbf'], 'svr__C': C}
+    ]
+
+svr_pipeline = make_pipeline(preprocessing, SVR())
+grid_search = GridSearchCV(svr_pipeline, param_grid, cv=2,
+                           scoring='neg_root_mean_squared_error')
+grid_search.fit(housing.iloc[:5000], housing_labels.iloc[:5000])
+
+svr_grid_search_rmse = -grid_search.best_score_
+print(svr_grid_search_rmse)
+
+print(grid_search.best_params_)
 
 
-# def svm_test_select(kernels, C, gamma="scale"):
-#     y_select = list(np.zeros(len(C), dtype=int))
-#     for k in kernels:
-#         for c in C:
-#             svm_pip_select = make_pipeline(preprocessing,
-#                                            SelectFromModel(estimator=RandomForestRegressor(),
-#                                                            threshold="mean",
-#                                                            prefit=False),
-#                                            SVR(kernel=k, C=c, gamma=gamma))
-#             svm_rmses_select = -cross_val_score(svm_pip_select,
-#                                          housing_shrunk,
-#                                          housing_labels_shrunk,
-#                                          scoring="neg_root_mean_squared_error",
-#                                          cv=3)
-#             print(f"SVM test with {k} kernel, C={c} has score {svm_rmses_select}.")
-#             y_select[C.index(c)] = svm_rmses_select
+
+# Q2: Try replacing the GridSearchCV with a RandomizedSearchCV.
+
+paramter_grid = [
+    {"svr__kernel": ["linear"],
+     "svr__C": C},
+    {"svr__kernel": ["rbf"],
+     "svr__C": C}
+]
+full_svm_pipeline = make_pipeline(preprocessing, SVR())
+grid_search = RandomizedSearchCV(full_svm_pipeline, paramter_grid,
+                                 n_iter=50, cv=3,
+                                 scoring="neg_root_mean_squared_error")
+grid_search.fit(housing_shrunk, housing_labels_shrunk)
+print(f"best parameters: {grid_search.best_params_}")
+print(f"best score: {grid_search.best_score_}")
+
+
+
+# Q3: Try adding a SelectFromModel transformer in the preparation pipeline
+#     to select only the most important attributes.
+
+def svm_test_select(kernels, C, gamma="scale"):
+    y_select = list(np.zeros(len(C), dtype=int))
+    for k in kernels:
+        for c in C:
+            svm_pip_select = make_pipeline(preprocessing,
+                                           SelectFromModel(estimator=RandomForestRegressor(),
+                                                           threshold="mean",
+                                                           prefit=False),
+                                           SVR(kernel=k, C=c, gamma=gamma))
+            svm_rmses_select = -cross_val_score(svm_pip_select,
+                                         housing_shrunk,
+                                         housing_labels_shrunk,
+                                         scoring="neg_root_mean_squared_error",
+                                         cv=3)
+            print(f"SVM test with {k} kernel, C={c} has score {svm_rmses_select}.")
+            y_select[C.index(c)] = svm_rmses_select
         
-#         print(f"\nTest for {k} completed.\n")
-#         fig_name = f"figures/exercise3_{k}.png"
-#         fig = plt.figure(figsize=(6.5, 5.5))
-#         plt.plot(C, y_select)
-#         plt.grid()
-#         plt.xlabel("C parameter")
-#         plt.ylabel("RMSE score")
-#         plt.legend(labels=["RMSE 1", "RMSE 2", "RMSE 3"])
-#         plt.savefig(fig_name)
-#         plt.close()
+        print(f"\nTest for {k} completed.\n")
+        fig_name = f"figures/exercise3_{k}.png"
+        fig = plt.figure(figsize=(6.5, 5.5))
+        plt.plot(C, y_select)
+        plt.grid()
+        plt.xlabel("C parameter")
+        plt.ylabel("RMSE score")
+        plt.legend(labels=["RMSE 1", "RMSE 2", "RMSE 3"])
+        plt.savefig(fig_name)
+        plt.close()
 
-# svm_test_select(kernels=kernels, C=C)
+svm_test_select(kernels=kernels, C=C)
 
 
 
-# 4.
+# Q4: Try creating a custom transformer that trains a k-nearest neighbors
+#     regressor (sklearn.neighbors.KNeighborsRegressor) in its fit() method,
+#     and outputs the model's predictions in its transform() method. Then add
+#     this feature to the preprocessing pipeline, using latitude and longitude as
+#     the inputs to this transformer. This will add a feature in the model that
+#     corresponds to the housing median price of the nearest districts.
 
 # cluster similarity class
 
@@ -307,39 +321,46 @@ print(housing_prepared.shape)
 
 
 
+# Q5: Automatically explore some preparation options using GridSearchCV.
+
+new_k_nearest_neighbours = KNeighborsRegressor(n_neighbors=5)
+
+new_param_grid = {
+    "preprocessing_new__geo__estimator": [new_k_nearest_neighbours],
+    "svr__C": C
+}
+
+
+full_svm_pipeline = Pipeline([
+    ("preprocessing_new", preprocessing_new),
+    ("svr", SVR())
+])
+new_grid_search = RandomizedSearchCV(estimator=full_svm_pipeline,
+                                     param_distributions=new_param_grid,
+                                     n_iter=50,
+                                     cv=3,
+                                     scoring="neg_root_mean_squared_error",
+                                     error_score="raise")
+
+new_grid_search.fit(housing_shrunk, housing_labels_shrunk)
+print(f"best parameters: {new_grid_search.best_params_}")
+print(f"best score: {new_grid_search.best_score_}")
 
 
 
-# # 5.
-
-# new_k_nearest_neighbours = KNeighborsRegressor(n_neighbors=5)
-
-# new_param_grid = {
-#     "preprocessing_new__geo__estimator": [new_k_nearest_neighbours],
-#     "svr__C": C
-# }
-
-
-# full_svm_pipeline = Pipeline([
-#     ("preprocessing_new", preprocessing_new),
-#     ("svr", SVR())
-# ])
-# new_grid_search = RandomizedSearchCV(estimator=full_svm_pipeline,
-#                                      param_distributions=new_param_grid,
-#                                      n_iter=50,
-#                                      cv=3,
-#                                      scoring="neg_root_mean_squared_error",
-#                                      error_score="raise")
-
-# new_grid_search.fit(housing_shrunk, housing_labels_shrunk)
-# print(f"best parameters: {new_grid_search.best_params_}")
-# print(f"best score: {new_grid_search.best_score_}")
-
-
-
-
-
-# 6.
+# Q6: Try to implement the Standard ScalerClone class again from scratch
+#     then add support for the inverse_transform() method: executing scaler.
+#     inverse_transform(scaler.fit_transform(X)) should return an array very
+#     close to X. Then add support for feature names: set feature_names_in_
+#     in the fit() method if the input is a DataFrame. This attribute should be a
+#     NumPy array of column names. Lastly, implement the
+#     get_feature_names_out method: it should have one optional
+#     input_features=None argument. If passed, the method should check that
+#     its length mathces n_features_in_, and it should match
+#     feature_names_in_ if it is defined; then input_features should be
+#     returned. If input_features is None, then the method should either return
+#     feature_names_in_ if it is defined or np.array(["x0", "x1", ...]) with
+#     length n_features_in_ otherwise.
 
 class StandardScalerClone(BaseEstimator, TransformerMixin):  # input BaseEstimator and TrasnformerMixin for default constructions get_params, set_params as well as fit_transform
     def __init__(self, with_mean=True):  # no *args or **kwargs
@@ -416,12 +437,7 @@ class NewStandardScalerClone(BaseEstimator, TransformerMixin):
                            np.array([f"x{i}" for i in range(self.n_features_in_)]))
 
 
-
-
-
-
-
-    
+  
 X_new = pd.DataFrame([[1, 2], [3, 4]], columns=["x", "y"])
 print(X_new)
 
@@ -438,33 +454,6 @@ print(X_new_new_transformed)
 print("\n")
 
 print(scaler.get_feature_names_out())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
