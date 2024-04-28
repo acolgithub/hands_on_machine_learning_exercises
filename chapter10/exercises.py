@@ -2,7 +2,12 @@
 
 
 
-# 3.
+# Q3: Why is it generally preferable to use a logistic regression classifier
+#     rather than a classic perceptron (i.e., a single layer of threshold logic
+#     units trained using the perceptron training algorithm)? How can you
+#     tweak a perceptron to make it equivaent to a logistic regression
+#     classifier?
+
 print(f"""A single layer of TLUs only provides a binary classification
 based on inputs while a logistic regression classifier gives a probability
 indicating certainty of which classification it gives.
@@ -11,20 +16,35 @@ make a single layer of TLUs equivalent to a logistic regression classifier.\n"""
 
 
 
-# 4.
+# Q4: Why was the sigmoid activation function a key ingredient in training the
+#     first MLPs?
+
 print(f"""The sigmoid function was important in training the first MLPs
 since it has well-defined non-zero derivative everywhere which allows
 gradient descent to make progress each step.\n""")
 
 
 
-# 5.
+# Q5: Name three popular activation functions. Can you draw them?
+
 print(f"""Three popular activation functions are sigmoid, hyperbolic tangent,
 and the rectified linear unit.\n""")
 
 
 
-# 6.
+# Q6: Suppose you have an MLP compound of one input layer with 10
+#     passthrough neurons, followed by one hidden layer with 50 artificial
+#     neurons, and finally one output layer with 3 artificial neurons. All
+#     artificial neurons use the ReLU activation function.
+#
+#     a. What is the shape of the input matrix X?
+#     b. What are the shapes of the hidden layer's weight matrix Wh and
+#        bias vector bh?
+#     c. What are the shapes of the output layer's weight matrix Wo and
+#        bias vector bo?
+#     d. What is the shape of the network's output matrix Y?
+#     e. Write the equation that computes the network's output matrix Y as
+#        a function of X, Wh, bh, Wo, and bo.
 
 # a.
 print(f"""The input matrix, X, has shape mx10 where m is the number of
@@ -47,11 +67,9 @@ print(f"""Y = ReLU(ReLu(XW_h + b_h)W_o + b_o)\n""")
 
 
 
-# 7.
+# Q8: What is backpropagation and how does it work? What is the difference
+#     between backpropagation and reverse-mode autodiff?
 
-
-
-# 8.
 print(f"""Backpropagation is an algorithm to calculate the amount of
 difference caused in the ouput from its target due to each of its
 layers using chain rule and proceeding backward through the neural
@@ -63,14 +81,25 @@ while backpropagation refers only to the backward pass.\n""")
 
 
 
-# 9.
+# Q9: Can you list all the hyperparameters you can tweak in a basic MLP? If
+#     the MLP overfits the training data, how could you tweak these
+#     hyperparameters to try to solve the problem?
+
 print(f"""Hyperparameters that can be tweaked include the number of
 hidden layers, the number of neurons per hidden layer,
 the number of output neurons, the activation functions, and the loss function.\n""")
 
 
 
-# 10.
+# Q10: Train a deep MLP on the MNIST dataset (you can load it using tf.keras.
+#      dataset.mnist.load_data()). See if you can get over 98% accuracy by
+#      manually tuning the hyperparameters. Try searching for the optimal
+#      learning rate by using the approach presented in this chapter (i.e., by
+#      growing the learning rate exponentially, plotting the loss, and finding
+#      the point where the loss shoots up). Next, try tuning the hyperparameters
+#      using Keras Tuner with all the bells and whistles--save checkpoints, use
+#      early stopping, and plot learning curves using TensorBoard.
+
 import tensorflow as tf
 from tensorflow.keras.datasets.mnist import load_data
 
