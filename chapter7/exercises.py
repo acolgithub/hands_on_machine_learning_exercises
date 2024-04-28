@@ -2,19 +2,26 @@
 
 
 
-# 1.
+# Q1: If you have trained five different models on the exact same training data,
+#     and they all achieve 95% precision, is there any chance that you can
+#     combine these models to get better results? If so, how? If not, why?
+
 print(f"""There is a chance that combining the models gives a better result provided that the errors of the different models are not correlated.
 Combining many models may improve accuracy since different models can make differernt mistakes but be corrected by the remaining ones.\n""")
 
 
 
-# 2.
+# Q2: What is the difference between hard and soft voting classifiers?
+
 print(f"""In hard voting classifiers the most frequently occuring prediction determines the vote.
 In soft voting classifiers the votes of the constituent models are combined to form a prediction by averaging the estimated class probabilities.\n""")
 
 
 
-# 3.
+# Q3: Is it possible to speed up training of a bagging ensemble by distributing
+#     it across multiple servers? What about pasting ensembles, boosting
+#     ensembles, random forests, or stacking ensembles?
+
 print(f"""Yes, it is possible to speed up training of a bagging ensemble by distributing it across multiple servers.
 This also works for pasting and random forest.
 Random forests are trained using the bagging method.
@@ -24,13 +31,17 @@ However, training of one layer will necessarily occur after training another lay
 
 
 
-# 4.
+# Q4: What is the benefit of out-of-bag evaluation?
+
 print(f"""The benefit of out-of-bag evaluation is that you obtain a validation set without the need for setting aside one earlier.
 That is, it is provided by the method.\n""")
 
 
 
-# 5.
+# Q5: What makes extra-trees ensembles more random than regular random
+#     forests? How can this extra randomness help? Are extra-trees classifiers
+#     slower or faster than regular random forests?
+
 print(f"""Extra-trees ensembles are more random than regular random forests since they also choose the threshold for splitting randomly.
 This allow for more randomness to be worked into the algorithm.
 This helps the alogrithm helps by training the random forest faster.
@@ -38,17 +49,30 @@ The algorithm is faster to train since it does not search for the best threshold
 
 
 
-# 6.
+# Q6: If you AdaBoost ensemble underfits the training data, which
+#     hyperparameters should you tweak, and how?
+
 print(f"""You could try increasing the number of estimators or try weakening the amount of regularizing.\n""")
 
 
 
-# 7.
+# Q7: If your gradient boosting ensemble overfits the training set, should you
+#     increase or decrease the learning rate?
+
 print(f"""If the gradient boosting ensemble overfits the training set you should increase the learning rate.\n""")
 
 
 
-# 8.
+# Q8: Load the MNIST dataset (introduced in Chapter 3), and split it into a
+#     training set, a validation set, and a test set (e.g., use 50,000 instances for
+#     training, 10,000 for validation, and 10,000 for testing). Then train
+#     various classifiers, such as a random forest classifier, an extra-trees
+#     classifier, and an SVM classifier. Next, try to combine them into an
+#     ensemble that outperforms each individual classifier on the validation
+#     set, using soft or hard voting. Once you have found one, try it on the test
+#     set. How much better does it perform compared to the individual
+#     classifiers?
+
 from sklearn.datasets import fetch_openml
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.svm import LinearSVC, SVC
@@ -100,47 +124,58 @@ mnist_linear_svc = LinearSVC(penalty="l2", loss="squared_hinge", C=3, random_sta
 mnist_forest.fit(X_mnist_train, y_mnist_train)
 mnist_extra_trees.fit(X_mnist_train, y_mnist_train)
 mnist_linear_svc.fit(X_mnist_train, y_mnist_train)
-# mnist_svc.fit(X_mnist_train, y_mnist_train)
+mnist_svc.fit(X_mnist_train, y_mnist_train)
 
-# mnist_voting_hard.fit(X_mnist_train, y_mnist_train)
-# mnist_voting_soft.fit(X_mnist_train, y_mnist_train)
-
-
-# # check accuracy of all classifiers
-# print(f"Accuracy of classifiers")
-# print(f"random forest: {mnist_forest.score(X_mnist_val, y_mnist_val)}")  # accuracy: 0.9736
-# print(f"extra trees: {mnist_extra_trees.score(X_mnist_val, y_mnist_val)}")  # accuracy: 0.9743
-# print(f"linear svc: {mnist_linear_svc.score(X_mnist_val, y_mnist_val)}")  # accuracy 0.8801
-# print("\n")
-
-# y_mnist_val_encoded = y_mnist_val.astype(np.int64)  # convert class names to integers
-# for estimator in mnist_voting_hard.estimators_:
-#     print(f"accuracy: {estimator.score(X_mnist_val, y_mnist_val_encoded)}")  # same scores
-# print("\n")
-# # print(f"svc: {mnist_svc.score(X_mnist_val, y_mnist_val)}")
-# print(f"voting hard: {mnist_voting_hard.score(X_mnist_val, y_mnist_val)}")  # with svm accuracy: 0.9741 | without svm accuracy: 0.9735
-# # print(f"voting soft: {mnist_voting_soft.score(X_mnist_val, y_mnist_val)}")
-# print("\n")
+mnist_voting_hard.fit(X_mnist_train, y_mnist_train)
+mnist_voting_soft.fit(X_mnist_train, y_mnist_train)
 
 
-# # evaluate on test set
-# print(f"Accuracy on test set")
-# # print(f"random forest: {mnist_forest.score(X_mnist_test, y_mnist_test)}")  # accuracy: 0.968
-# # print(f"extra trees: {mnist_extra_trees.score(X_mnist_test, y_mnist_test)}")  # accuracy: 0.9703
-# # print(f"linear svc: {mnist_linear_svc.score(X_mnist_test, y_mnist_test)}")  # accuracy: 0.8797
-# print("\n")
+# check accuracy of all classifiers
+print(f"Accuracy of classifiers")
+print(f"random forest: {mnist_forest.score(X_mnist_val, y_mnist_val)}")  # accuracy: 0.9736
+print(f"extra trees: {mnist_extra_trees.score(X_mnist_val, y_mnist_val)}")  # accuracy: 0.9743
+print(f"linear svc: {mnist_linear_svc.score(X_mnist_val, y_mnist_val)}")  # accuracy 0.8801
+print("\n")
 
-# y_mnist_test_encoded = y_mnist_test.astype(np.int64) 
-# for estimator in mnist_voting_hard.estimators_:
-#     print(f"accuracy: {estimator.score(X_mnist_test, y_mnist_test_encoded)}")  # same scores
-# print("\n")
-# # print(f"svc: {mnist_svc.score(X_mnist_test, y_mnist_test)}")
-# print(f"voting hard: {mnist_voting_hard.score(X_mnist_test, y_mnist_test)}")  # with svm accuracy: 0.9682 | without svm accuracy 0.9691
+y_mnist_val_encoded = y_mnist_val.astype(np.int64)  # convert class names to integers
+for estimator in mnist_voting_hard.estimators_:
+    print(f"accuracy: {estimator.score(X_mnist_val, y_mnist_val_encoded)}")  # same scores
+print("\n")
+# print(f"svc: {mnist_svc.score(X_mnist_val, y_mnist_val)}")
+print(f"voting hard: {mnist_voting_hard.score(X_mnist_val, y_mnist_val)}")  # with svm accuracy: 0.9741 | without svm accuracy: 0.9735
+# print(f"voting soft: {mnist_voting_soft.score(X_mnist_val, y_mnist_val)}")
+print("\n")
+
+
+# evaluate on test set
+print(f"Accuracy on test set")
+# print(f"random forest: {mnist_forest.score(X_mnist_test, y_mnist_test)}")  # accuracy: 0.968
+# print(f"extra trees: {mnist_extra_trees.score(X_mnist_test, y_mnist_test)}")  # accuracy: 0.9703
+# print(f"linear svc: {mnist_linear_svc.score(X_mnist_test, y_mnist_test)}")  # accuracy: 0.8797
+print("\n")
+
+y_mnist_test_encoded = y_mnist_test.astype(np.int64) 
+for estimator in mnist_voting_hard.estimators_:
+    print(f"accuracy: {estimator.score(X_mnist_test, y_mnist_test_encoded)}")  # same scores
+print("\n")
+# print(f"svc: {mnist_svc.score(X_mnist_test, y_mnist_test)}")
+print(f"voting hard: {mnist_voting_hard.score(X_mnist_test, y_mnist_test)}")  # with svm accuracy: 0.9682 | without svm accuracy 0.9691
 # # print(f"voting soft: {mnist_voting_soft.score(X_mnist_test, y_mnist_test)}")
 
 
 
-# 9.
+# Q9: Run the individual classifiers from the previous exercise to make
+#     predictions on the validation set, and create a new training set with the
+#     resulting predictions: each training instance is a vector containing the set
+#     of predictions from all your classifiers for an image, and the target is the
+#     image's class. Train a classifier on this new training set. Congratulations
+#     --you have just trained a blender, and together with the classifiers it
+#     forms a stacking ensemble! Now evaluate the ensemble on the test set.
+#     For each image in the test set, make predictions with all your classifiers,
+#     then feed the predictions to the blender to get the ensemble's
+#     predictions. How does it compare to the voting classifier you trained
+#     earlier? Now try again using a StackingClassifier instead. Do you get
+#     better performance? If so, why?
 
 # make predictions
 y_mnist_forest_pred = mnist_forest.predict(X_mnist_val)
