@@ -2,7 +2,8 @@
 
 
 
-# 1.
+# Q1: What is the fundamental idea behind support vector machines?
+
 print(f"""The fundamental idea behind support vector machines is to find a
       separating hyperplane (separating one particular classification from another)
       which maximizes the distance between the hyperplane ane the nearest points
@@ -10,20 +11,24 @@ print(f"""The fundamental idea behind support vector machines is to find a
 
 
 
-# 2.
+# Q2: What is a support vector?
+
 print(f"""A support vector is a vector which lies on the margin and supports
       the plane.\n""")
 
 
 
-# 3.
+# Q3: Why is it important to scale the inputs when using SVMs?
+
 print(f"""It is important to scale inputs when using SVMs since determining
       the appropriate hyperplane is affected by scale. In particular,
       the slope may be affected if one feature takes on much larger values.\n""")
 
 
 
-# 4.
+# Q4: Can an SVM classifier output a confidence score when it classifies an
+#     instance? What about a probability?
+
 print(f"""SVM classifiers can ouput a decision score using the decision function.
       This gives you the signed distance to the decision boundary,
       However, if you use the SVC class you can set the probability
@@ -32,7 +37,8 @@ print(f"""SVM classifiers can ouput a decision score using the decision function
 
 
 
-# 5.
+# Q5: How can you choose between LinearSVC, SVC, and SGDClassifier?
+
 print(f"""If you expect you need nonlinear classification and the number
       of training instances is not too large then SVC would be a better
       choice. If you have a large training set it is better to use LinearSVC
@@ -41,19 +47,24 @@ print(f"""If you expect you need nonlinear classification and the number
 
 
 
-# 6.
+# Q6: Say you've trained an SVM classifier with an RBF kernel, but it seems
+#     to underfit the training set. Should you increase or decrease γ (gamma)?
+#     What about C?
+
 print(f"""If the SVM Classifier has underfit the training set you should
       increase gamma. To fix overfitting you should increase C.\n""")
 
 
 
-# 7.
+# Q7: What does it mean for a model to be ϵ-insensitive?
+
 print(f"""A model is epsilon insensitive if adding more instances within
       the margin does not affect the model's predictions.\n""")
 
 
 
-# 8.
+# Q8: What is the point of using the kernel trick?
+
 print(f"""The point of using the kernel trick is to simulate using more
       features which encode higher powers of the original feature without
       actually adding them. This permits you to classify nonlinear problems
@@ -61,7 +72,10 @@ print(f"""The point of using the kernel trick is to simulate using more
 
 
 
-# 9.
+# Q9: Train a LinearSVC on a linearly separable dataset. Then train an SVC
+#     and a SGDClassifier on the same dataset. See if you can get them to
+#     produce roughly the same model.
+
 from sklearn.svm import LinearSVC
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
@@ -208,7 +222,14 @@ plt.savefig("figures/classsifier_comparison2.png")
 plt.close()
 
 
-# 10.
+# Q10: Train an SVM classifier on the wine dataset, which you can load using
+#      sklearn.datasets.load_wine(). This dataset contains the chemical
+#      analyses of 178 wine samples produced by 3 different cultivators: the
+#      goal is to train a classification model capable of predicting the cultivator
+#      based on the wine's chemical analysis. Since SVM classifiers are binary
+#      classifiers, you will need to use one-versus-all to classify all three
+#      classes. What accuracy can you reach?
+
 from sklearn.datasets import load_wine
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.model_selection import GridSearchCV
@@ -273,7 +294,15 @@ print(f"Optimal estimator: {grid_search.best_estimator_}\n")
 
 
 
-# 11.
+# Q11: Train and fine-tune an SVM regressor on the California housing dataset.
+#      You can use the original dataset rather than the tweaked version we used
+#      in Chapter 2, which you can load using
+#      sklearn.datasets.fetch_california_housing(). The targets represent
+#      hundreds of thousands of dollars. Since there are over 20,000 instances,
+#      SVMs can be slow, so for hyperparameter tuning you should use far
+#      fewer instances (e.g., 2,000) to test many more hyperparameter
+#      combinations. What is your best model's RMSE?
+
 from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVR
