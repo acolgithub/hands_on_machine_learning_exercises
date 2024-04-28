@@ -2,19 +2,24 @@
 
 
 
-# 1.
+# Q1: How would you define clustering? can you name a few clustering
+#     algorithms?
+
 print(f"""Clustering is finding similar groups among unlabelled data.
 Some clustering algorithms include K-means and DBSCAN.\n""")
 
 
 
-# 2.
+# Q2: What are some of the main applications of clustering algorithms?
+
 print(f"""Some of the main application of clustering algorithms include
 customer segmentation, data analysis, and dimensionality reduction.\n""")
 
 
 
-# 3.
+# Q3: Describe two techniques to select the right number of clusters when
+#     using k-means.
+
 print(f"""One technique to select the right number of clusters is to plot
 inertia as a function of the number of clusters and choose the number of
 clusters which maximizes decline.
@@ -30,7 +35,8 @@ and mean nearest-cluster distance.\n""")
 
 
 
-# 4.
+# Q4: What is label propagation? Why would you implement it, and how?
+
 print(f"""Label propagation is the extension of the labels given to a
 subset of the data to the rest of the instances in the same cluster.
 That is, we extend a label of some data point to the other members of
@@ -40,7 +46,9 @@ manually label all data instances.\n""")
 
 
 
-# 5.
+# Q5: Can you name two clustering algorithms that can scale to large datasets?
+#     And two that look for regions of high density?
+
 print(f"""Two clustering algorithms that scale to large datasets are
 BIRCH and mini-batch k-means.
 Two algorithms which look for regions of high density include DBSCAN and
@@ -48,7 +56,9 @@ agglomerative clustering.\n""")
 
 
 
-# 6.
+# Q6: Can you think of a use case where active learning would be useful? How
+#     would you implement it?
+
 print(f"""Active learning would be useful when trying to classify
 some sort of object.
 If the program becomes uncertain then a human expert can provide
@@ -60,7 +70,9 @@ a training instance.\n""")
 
 
 
-# 7.
+# Q7: What is the difference between anomaly detection and novelty
+#     detection?
+
 print(f"""In anomaly detection we are trying to detect when a particular
 data point represents an outlier.
 In novelty detection we are interested in finding an unusual
@@ -70,7 +82,8 @@ on a 'clean' dataset without outliers.\n""")
 
 
 
-# 8.
+# Q8: What is a Gaussian mixture? What tasks can you use it for?
+
 print(f"""A Gaussian mixture assumes that the instances were generated
 from a mixture of several Gaussian distributions whose parameters
 are unknown.
@@ -78,14 +91,29 @@ You can use this for anomaly detection.\n""")
 
 
 
-# 9.
+# Q9: Can you name two techniques to find the right number of clusters when
+#     using a Gaussian mixture model?
+
 print(f"""Two techniques to find the right number of clusters when
 using a Gaussian mixture model include Bayesian information
 criterion (BIC) or Akaike information criterion (AIC).\n""")
 
 
 
-# 10.
+# Q10: The classic Olivetti faces dataset contains 400 grayscale 64 x 64-pixel
+#      images of faces. Each image is flattened to a 1D vector of size 4,096.
+#      Forty different people were photographed (10 times each), and the usual
+#      task is to train a model that can predict which person is represented in
+#      each picture. Load the dataset using the
+#      sklearn.datasets.fetch_olivetti_faces() function, then split it into a
+#      training set, a validation set, and a test set (note that the dataset is
+#      already scaled between 0 and 1). Since the dataset is quite small, you
+#      will probably want to use stratified sampling to ensure that there are the
+#      same number of images per person in each set. Next cluster the images
+#      using k-means, and ensure that you have a good number of clusters
+#      (using one of the techniques discussed in this chapter). Visualize the
+#      clusters: do you see similar faces in each cluster?
+
 from sklearn.datasets import fetch_olivetti_faces
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.cluster import KMeans
@@ -161,15 +189,22 @@ def plot_faces(faces, labels, n_cols=5):
         plt.title(label)  # add title
     plt.show()
 
-# for cluster_id in np.unique(kmeans.labels_):  # loop over cluster ids
-#     print("Cluster", cluster_id)  # print cluster number
-#     in_cluster = kmeans.labels_==cluster_id  # find labels matching cluster id
-#     faces = X_train[in_cluster]  # get faces corresponding to cluster
-#     labels = y_train[in_cluster]  # get labels corresponding to cluster
-#     plot_faces(faces, labels)  # plot face
+for cluster_id in np.unique(kmeans.labels_):  # loop over cluster ids
+    print("Cluster", cluster_id)  # print cluster number
+    in_cluster = kmeans.labels_==cluster_id  # find labels matching cluster id
+    faces = X_train[in_cluster]  # get faces corresponding to cluster
+    labels = y_train[in_cluster]  # get labels corresponding to cluster
+    plot_faces(faces, labels)  # plot face
 
 
-# 11.
+# Q11: Continuing with the Olivetti faces dataset, train a classifier to predict
+#      which person is represented in each picture, and evaluate it on the
+#      validation set. Next, use k-means as a dimensionality reduction tool, and
+#      train a classifier on the reduced set. Search for the number of clusters
+#      that allows the classifier to get the best performance: what performance
+#      can you reach? What if you append the features from the reduced set to
+#      the original features (again, searching for the best number of clusters)?
+
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import GridSearchCV
@@ -204,57 +239,66 @@ print(f"Score on validation set: {accuracy_score(y_val, y_pred)}")  # got 72.5% 
 
 
 
-# # make pipeline
-# clf = make_pipeline(
-#     KMeans(random_state=42),
-#     RandomForestClassifier(criterion="gini", random_state=42)
-# )
+# make pipeline
+clf = make_pipeline(
+    KMeans(random_state=42),
+    RandomForestClassifier(criterion="gini", random_state=42)
+)
 
-# # parameter grid
-# parameter_grid = {
-#     "kmeans__n_clusters": np.arange(2,160)
-# }
+# parameter grid
+parameter_grid = {
+    "kmeans__n_clusters": np.arange(2,160)
+}
 
-# # find optimal number of clusters
-# grid_search = GridSearchCV(estimator=clf,
-#                            param_grid=parameter_grid,
-#                            cv=3)
+# find optimal number of clusters
+grid_search = GridSearchCV(estimator=clf,
+                           param_grid=parameter_grid,
+                           cv=3)
 
-# grid_search.fit(X_train, y_train)
+grid_search.fit(X_train, y_train)
 
-# # get best model
-# opt_model = grid_search.best_estimator_
-# print(f"Best parameters: {grid_search.best_params_}")
-# print(f"Best score: {grid_search.best_score_}")
+# get best model
+opt_model = grid_search.best_estimator_
+print(f"Best parameters: {grid_search.best_params_}")
+print(f"Best score: {grid_search.best_score_}")
 
-# y_pred = opt_model.predict(X_val)
-# print(f"Validation accuracy: {accuracy_score(y_val, y_pred)}")  # got 85% accuracy
-
-
+y_pred = opt_model.predict(X_val)
+print(f"Validation accuracy: {accuracy_score(y_val, y_pred)}")  # got 85% accuracy
 
 
 
 
 
-# # append features from reduced set to original features
-# X_train_concat = np.c_[X_train, X_train_reduced]
-# X_val_concat = np.c_[X_val, X_val_reduced]
-# X_test_concat = np.c_[X_test, X_test_reduced]
-
-# # make pipeline
-# clf = RandomForestClassifier(criterion="gini", random_state=42)
-
-# # fit model
-# clf.fit(X_train_concat, y_train)
-
-# # make predictions
-# y_pred = clf.predict(X_val_concat)
-# print(f"Validation accuracy: {accuracy_score(y_val, y_pred)}")  # got 91.25%
 
 
+# append features from reduced set to original features
+X_train_concat = np.c_[X_train, X_train_reduced]
+X_val_concat = np.c_[X_val, X_val_reduced]
+X_test_concat = np.c_[X_test, X_test_reduced]
+
+# make pipeline
+clf = RandomForestClassifier(criterion="gini", random_state=42)
+
+# fit model
+clf.fit(X_train_concat, y_train)
+
+# make predictions
+y_pred = clf.predict(X_val_concat)
+print(f"Validation accuracy: {accuracy_score(y_val, y_pred)}")  # got 91.25%
 
 
-# 12.
+
+
+# Q12: Train a Gaussian mixture model on the Olivetti faces dataset. To speed
+#      up the algorithm, you should probably reduce the datsset's
+#      dimensionality (e.g., use PCA, preserving 99% of the variance). Use the
+#      model to generate some new faces (using the sample() method), and
+#      visualize them (if you used PCA, you will need to use its
+#      inverse_transform() method). Try to modify some images (e.g., rotate,
+#      flip, darken) and see if the model can detect the anomalies (i.e., compare
+#      the output of the score_samples() method for normal images and for
+#      anomalies).
+
 from sklearn.decomposition import PCA
 from sklearn.mixture import GaussianMixture
 
