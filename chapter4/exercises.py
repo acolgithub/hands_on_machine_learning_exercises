@@ -1,58 +1,79 @@
-# 1.
+# Q1: Which is linear regression training algorithm can you use if you have a
+#     training set set with millions of features?
 
 print(f"In a situation where the training set has millions of features (i.e. large n) you could use the Stochastic Gradient Descent Algorithm.\n")
 
 
 
-# 2.
+# Q2: Suppose the features in your training set have very different scales.
+#     Which algorithms might suffer from this, and how? What can you do
+#     about it?
 
 print(f"Gradient Descent algorithms might have difficulty if the features have very different scales. To fix this, you should rescale the data to be in a common range.\n")
 
 
 
-# 3.
+# Q3: Can gradient descent get stuck in a local minimum when training a
+#     logistic regression model?
 
 print(f"The cost function for a logistic regression model is convex so gradient descent cannot get caught in a local minimum.\n")
 
 
 
-# 4.
+# Q4: Do all gradient descent algorithms lead to the same model, proivided you
+#     let them run long enough?
 
 print(f"The algorithms may not converge to the same model if the learning rate is not adjusted. In addition, stochastic algorithms need the learning rate decreased over time in order to converge to the same model (this is to counteract the build-in randomness).\n")
 
 
 
-# 5.
+# Q5: Suppose you use batch gradient descent and you plot the validation error
+#     at every epoch. If you notice that the validation error consistently goes
+#     up, what is likely going on? How can you fix this?
 
 print(f"The model is diverging from the minimizer. To fix this, you should decrease the learning rate so that the algorithm can converge to the minimizer.\n")
 
 
 
-# 6.
+# Q6: Is it a good idea to stop mini-batch gradient descent immediately when
+#     the validation error goes up?
 
 print(f"This is not a good idea since mini-batch gradient descent makes random choices of small batches which could sometimes result in an increase in cost. It would be better to stop the algorithm if this happens consistently for a number of iterations and revert to the minimum.\n")
 
 
 
-# 7.
+# Q7: Which gradient descent algorithm (among those we discussed) will
+#     reach the vicinity of the optimal solution the fastest? Which will actually
+#     converge? How can you make the others converge as well?
 
 print(f"Stochastic gradient descent will reach the viscinity of the optimal solution the fastest since it only calculates the gradient on a single sample which is quite fast. However, this algorithm will not converge unless you adjust the larning rate since the built-in randomness. Batch gradient descent will actually converge.\n")
 
 
 
-# 8.
+# Q8: Suppose you are using polynomial regression. You plot the learning
+#     curves and you notice that there is a large gap between the training error
+#     and the validation error. What is happening? What are three ways to
+#     solve this?
 
 print(f"In this scenario the model is overfitting to the training data which causes a large gap between training error and validation error. To solve this, since this is polynomial regression, you could the degree of the regression polynomial. You could also regularize the model to reduces it complexity. Another way would be to provide more training data if we are certain of the degree.\n")
 
 
 
-# 9.
+# Q9: Suppose you are using ridge regression and you notice that the training
+#     error and the validation error are almost equal and fairly high. Would
+#     you say that the model suffers from high bias or high variance? Should
+#     you increase the regularization hyperparameter α or reduce it?
 
 print(f"Since you are seeing large training/validation errors then the model is underfitting likely has high bias. We should decrease alpha to allow the model to fit more parameters to the data. Increasing the complexity could help reduce the large training/validation errors.\n")
 
 
 
-# 10.
+# Q10: Why would you want to use:
+#
+#      a. Ridge regression instead of plain linear regression (i.e., without any
+#         regularization)?
+#      b. Lasso instead of ridge regression?
+#      c. Elastic net instead of lasso regression?
 
 # a.
 print(f"It is often good to use ridge regression as opposed to plain linear regression.")
@@ -65,13 +86,17 @@ print(f"You would use elastic net regression instead of lasso regression when yo
 
 
 
-# 11.
+# Q11: Suppose you want to classify pictures as outdoor/indoor and
+#      daytime/nighttime. Should you implement two logistic regression
+#      classifiers or one softmax regression classifier?
 
 print(f"Since the number of classes is just 2 for each classification and since you want multiple classifications (the classifications are independent) then you would use two logistic classifiers.\n")
 
 
 
-# 12.
+# Q12: Implement batch gradient descent with early stopping for softmax
+#      regression without using Scitkit-Learn, only Numpy. Use it on a
+#      classification task such as the iris dataset.
 
 import numpy as np
 from sklearn.datasets import load_iris
@@ -285,15 +310,5 @@ print(f"Optimal model validation score: {valid_score_opt}\n")  # optimal validat
 print(f"Optimal model prediction accuracy on training set: {100*(softmax_classifier(X_train, Theta_opt) == np.argmax(y_train, axis=1)).mean()}%")  # scored 95.55555555555556%
 print(f"Optimal model prediction accuracy on validation set: {100*(softmax_classifier(X_valid, Theta_opt) == np.argmax(y_valid, axis=1)).mean()}%")  # scored 90.0%
 print(f"Optimal model prediction accuracy on test set: {100*(softmax_classifier(X_test, Theta_opt) == np.argmax(y_test, axis=1)).mean()}%")  # scored 96.66666666666667%
-
-
-
-
-
-
-
-
-
-
 
 
